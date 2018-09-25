@@ -2,14 +2,14 @@
 
 namespace Laracasts\Behat\ServiceContainer;
 
+use Behat\Behat\Context\ServiceContainer\ContextExtension;
+use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
 use Behat\Testwork\ServiceContainer\Extension;
 use Behat\Testwork\ServiceContainer\ExtensionManager;
-use Symfony\Component\DependencyInjection\Definition;
-use Behat\Behat\Context\ServiceContainer\ContextExtension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Laracasts\Behat\Context\Argument\LaravelArgumentResolver;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Behat\Testwork\EventDispatcher\ServiceContainer\EventDispatcherExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 
 class BehatExtension implements Extension
 {
@@ -47,11 +47,11 @@ class BehatExtension implements Extension
     {
         $builder
             ->children()
-                ->scalarNode('bootstrap_path')
-                    ->defaultValue('bootstrap/app.php')
-                ->end()
-                ->scalarNode('env_path')
-                    ->defaultValue('.env.behat');
+            ->scalarNode('bootstrap_path')
+            ->defaultValue('bootstrap/app.php')
+            ->end()
+            ->scalarNode('env_path')
+            ->defaultValue('.env.behat');
     }
 
     /**
@@ -105,7 +105,9 @@ class BehatExtension implements Extension
      */
     private function loadLaravelArgumentResolver(ContainerBuilder $container, $app)
     {
-        $definition = new Definition(LaravelArgumentResolver::class, [$app]);
+        $definition = new Definition(LaravelArgumentResolver::class, [
+            new Reference('laravel.app')
+        ]);
         $definition->addTag(ContextExtension::ARGUMENT_RESOLVER_TAG, ['priority' => 0]);
         $container->setDefinition('laravel.context.argument.service_resolver', $definition);
     }
