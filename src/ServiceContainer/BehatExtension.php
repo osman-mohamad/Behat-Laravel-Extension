@@ -10,6 +10,7 @@ use Laracasts\Behat\Context\Argument\LaravelArgumentResolver;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
 
 class BehatExtension implements Extension
 {
@@ -106,7 +107,7 @@ class BehatExtension implements Extension
     private function loadLaravelArgumentResolver(ContainerBuilder $container, $app)
     {
         $definition = new Definition(LaravelArgumentResolver::class, [
-            new Reference('laravel.app')
+            new Reference('laravel.app'),
         ]);
         $definition->addTag(ContextExtension::ARGUMENT_RESOLVER_TAG, ['priority' => 0]);
         $container->setDefinition('laravel.context.argument.service_resolver', $definition);
